@@ -8,35 +8,35 @@
 #include<string.h>
 
 int main(int argc,char** argv){
-	int len;
-	int sockfd, n;
+	//Server and client addresses
 	struct sockaddr_in serveraddr, clientaddr;
-	char str[1000];
+	//Buffer to handle messages
 	char buffer[1024];
 	
-	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	//Server socket file descriptor
+	int sockfd = socket(AF_INET, SOCK_STREAM, 0);//(domain = Ipv4, type = TCP, protocol = 0
 	if(sockfd < 0)
 		perror("Error: Unable to create socket");
 	
+	//Filling server address with null bytes
 	bzero(&serveraddr, sizeof(serveraddr));
 
-	serveraddr.sin_family = AF_INET;
-	serveraddr.sin_addr.s_addr = inet_addr(argv[1]);
-	serveraddr.sin_port = htons(4500);
+	serveraddr.sin_family = AF_INET;//Use the Internet address family
+	serveraddr.sin_addr.s_addr = inet_addr(argv[1]);//Use ip address passed as command line argument
+	serveraddr.sin_port = htons(4500);//Connect socket to port 4500
 
-	if(bind(sockfd, (struct sockaddr*)&serveraddr, sizeof(serveraddr))<0)
-		perror("Bind error");
-	
+	//Attempt to connect client to socket on specified port
 	connect(sockfd, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
+
 	//Sending Message
-	len = sizeof(clientaddr);
+	int len = sizeof(clientaddr);
 	
+	//Write message into buffer
 	printf("Enter the message: ");scanf(" %[^\n]", buffer);
-	n = write(sockfd, buffer, sizeof(buffer));
+	write(sockfd, buffer, sizeof(buffer));
 	
-	listen(sockfd, 2);
-	
-	n = read(sockfd, buffer, sizeof(buffer));
+	//Read echoed message from buffer
+	read(sockfd, buffer, sizeof(buffer));
 	printf("Message from Server: %s", buffer);
 	
 	close(sockfd);
