@@ -9,32 +9,36 @@
 #include<fcntl.h>
 
 int main(int argc,char **argv){
-	int len;
-	int sockfd, newfd, n;
-	struct sockaddr_in serveraddr, clientaddr;
-	char buffer[1024], file_cont[1024];
-	char str[1000];
-	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	//Server and Client addresses
+	struct sockaddr_in server_address, client_address;
+	//Buffer to handle messages
+	char buffer[1024];
+	
+	//Socket file descriptor
+	int sockfd = socket(AF_INET, SOCK_STREAM, 0);//domain = IPv4, type = TCP, protocol = IP
 	if(sockfd < 0)
 		perror("Error: Unable to create socket");
 
-	bzero(&serveraddr, sizeof(serveraddr));
+	//Filling server_address with null bytes
+	bzero(&server_address, sizeof(server_address));
 
-	serveraddr.sin_family = AF_INET;
-	serveraddr.sin_addr.s_addr = INADDR_ANY;
-	serveraddr.sin_port = htons(4500);
+	server_address.sin_family = AF_INET;// Uses the Internet address family
+	server_address.sin_addr.s_addr = INADDR_ANY;// Use any of the available addresses
+	server_address.sin_port = htons(4500);// Connect to specified port 4500
 
-	if(bind(sockfd, (struct sockaddr*)&serveraddr, sizeof(serveraddr))<0)
+	//Bind socket to the specified port
+	if(bind(sockfd, (struct sockaddr*)&server_address, sizeof(server_address))<0)
 		perror("Bind error");
 
-	printf("\nWaiting for Client...\n");
+	//Look for clients to serve, with a maximum limit of 2.
 	listen(sockfd, 2);
 
-	len = sizeof(clientaddr);
-	newfd = accept(sockfd, (struct sockaddr*)&clientaddr, &len);
+	//New socket file descriptor to handle connections.
+	int len = sizeof(client_address);
+	int newfd = accept(sockfd, (struct sockaddr*)&client_address, &len);
 
-	//Receiving the message
-	n = read(newfd, buffer, sizeof(buffer));
+	//Read file name from buffer
+	read(newfd, buffer, sizeof(buffer));
 	printf("\nFile to be transferred to Client: %s\n", buffer);
 
 	int sourcefd = open(buffer, O_RDONLY);
@@ -42,9 +46,12 @@ int main(int argc,char **argv){
 		printf("\nNo source file");
 	}
 	else{
-		int readfd = read(sourcefd, file_cont, sizeof(file_cont));
-		file_cont[readfd] = '\0';
-		int w = write(newfd, file_cont, sizeof(file_cont));
+		bzero(buffer, sizeof(buffer));
+		//Read file contents
+		int readfd = read(sourcefd, buffer, sizeof(buffer));
+		buffer[readfd] = '\0';
+		//Send file contents back to client
+		write(newfd, buffer, sizeof(buffer));
 		close(sourcefd);
 	}
 	printf("\n File successfully transferred\n");
@@ -54,7 +61,6 @@ int main(int argc,char **argv){
 }
 /*
 Output:
-Waiting for Client...
 
 File to be transferred to Client: ./source.txt
 
