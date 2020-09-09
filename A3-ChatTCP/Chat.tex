@@ -1,0 +1,84 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+%\usepackage{minted}
+\usepackage{listings}
+\usepackage{xcolor}
+
+%For syntax highlighting
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{1,1,1}
+
+%%Sets different parameters
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=4
+}
+\lstset{style=mystyle}
+
+\title{\textbf{Department of Computer Science and Engineering}}
+\author{\textbf{S.G.Shivanirudh , 185001146, Semester V }}
+
+\date{9 September 2020}
+
+\begin{document}
+\maketitle
+\hrule
+\section*{\center{UCS1511 - Networks Laboratory}}
+\hrule 
+\bigskip\bigskip
+
+%Assignment name
+\subsection*{\center{\textbf{Exercise 3: Chat using TCP}}}
+
+%Objective
+\subsection*{\flushleft{\emph{Objective:}}}
+\begin{flushleft}
+Develop a simple chat using TCP socket.\\
+To a chat server, multiple stations chat simultaneously.
+\end{flushleft}
+
+%Code
+\subsection*{\flushleft{\emph{Code:}}}
+\subsubsection*{\flushleft{\emph{Server:}}}
+\begin{flushleft}
+\lstinputlisting[language = C, firstline = 4, lastline = 124]{Server.c}
+\end{flushleft}
+
+\subsubsection*{\flushleft{\emph{Client:}}}
+\begin{flushleft}
+\lstinputlisting[language = C, firstline = 4, lastline = 48]{Client.c}
+\end{flushleft}
+
+%Output
+\subsection*{\flushleft{\emph{Output:}}}
+\subsubsection*{\flushleft{\emph{Server:}}}
+\begin{flushleft}
+\lstinputlisting[language = C, firstline = 127, lastline = 152]{Server.c}
+\end{flushleft}
+\subsubsection*{\flushleft{\emph{Client 1:}}}
+\begin{flushleft}
+\lstinputlisting[language = C, firstline = 53, lastline = 62]{Client.c}
+\end{flushleft}
+\subsubsection*{\flushleft{\emph{Client 2:}}}
+\begin{flushleft}
+\lstinputlisting[language = C, firstline = 65, lastline = 74]{Client.c}
+\end{flushleft}
+
+\end{document}
