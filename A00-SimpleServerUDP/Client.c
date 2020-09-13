@@ -29,12 +29,13 @@ int main(int argc, char **argv){
     server_address.sin_addr.s_addr = INADDR_ANY; //Use any of the available addresses
     server_address.sin_port = htons(5678); //Use port 5678
 
-    //Sending message to server
-    printf("\nEnter a message: ");scanf(" %[^\n]", buffer);
-    sendto(sockfd, buffer, sizeof(buffer), MSG_CONFIRM, (struct sockaddr*)&server_address, sizeof(server_address));
-    //Read message from buffer
-    recvfrom(sockfd, buffer, sizeof(buffer),  MSG_WAITALL, (struct sockaddr*)&server_address, sizeof(server_address));
-    printf("\nMessage from server: %s\n", buffer);
-
+    while(strcmp(buffer, "end") != 0){
+	    //Sending message to server
+	    printf("\nEnter a message: ");scanf(" %[^\n]", buffer);
+	    sendto(sockfd, buffer, sizeof(buffer), MSG_CONFIRM, (struct sockaddr*)&server_address, sizeof(server_address));
+	    //Read message from buffer
+	    recvfrom(sockfd, buffer, sizeof(buffer),  MSG_WAITALL, (struct sockaddr*)&server_address, sizeof(server_address));
+	    printf("\nMessage from server: %s\n", buffer);
+	}
     close(sockfd);
 }

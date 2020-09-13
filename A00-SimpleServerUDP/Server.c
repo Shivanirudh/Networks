@@ -34,11 +34,12 @@ int main(int argc, char **argv){
 		perror("Bind error");
 
 	int len = sizeof(client_address);
-	recvfrom(sockfd, buffer, sizeof(buffer), MSG_WAITALL, (struct sockaddr*)&client_address, &len);
-	printf("\nMessage from client: %s\n", buffer);
-	
-	printf("\nEnter a message: ");scanf(" %[^\n]", buffer);
-	sendto(sockfd, buffer, sizeof(buffer), MSG_CONFIRM, (struct sockaddr*)&client_address, len);
-
+	while(strcmp(buffer, "end") != 0){
+		recvfrom(sockfd, buffer, sizeof(buffer), MSG_WAITALL, (struct sockaddr*)&client_address, &len);
+		printf("\nMessage from client: %s\n", buffer);
+		
+		printf("\nEnter a message: ");scanf(" %[^\n]", buffer);
+		sendto(sockfd, buffer, sizeof(buffer), MSG_CONFIRM, (struct sockaddr*)&client_address, len);
+	}
 	close(sockfd);
 }
