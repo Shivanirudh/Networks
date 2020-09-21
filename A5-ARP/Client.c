@@ -1,14 +1,7 @@
 /*Simulation of ARP Protocol*/
 //Client
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<sys/types.h>
-#include<sys/socket.h>
-#include<netinet/in.h>
-#include<string.h>
-#include<unistd.h>
-#include<sys/time.h>
+#include "Packet.h"
 
 int main(int argc,char** argv){
 	//Server and client addresses
@@ -16,18 +9,20 @@ int main(int argc,char** argv){
 	//Buffer to handle messages
 	char buffer[1024];
 	
-	//IP address
-	char *ip = (char*)calloc(100,sizeof(char));
-	//MAC address
-	char *mac = (char*)calloc(100, sizeof(char));
-	//Recieved IP address
-	char *rip = (char*)calloc(100, sizeof(char));
-	//Data 
-	char* data = (char*)calloc(100, sizeof(char));
+	//Check arguments
+	if(argc<2){
+		perror("\nError: IP address to be passed in command line.\n");
+	}
+
+	//ARP Packet structure
+	ARP packet;
+	
+	//Initialising ARP packet
+	init(&packet);
 	
 	//Accepting addresses
-	printf("\nEnter IP address: ");scanf(" %s", ip);
-	printf("\nEnter MAC address: ");scanf(" %s", mac);
+	printf("\nEnter IP address: ");scanf(" %s", packet.sip);
+	printf("\nEnter MAC address: ");scanf(" %s", packet.smac);
 
 	//Server socket file descriptor
 	int sockfd = socket(AF_INET, SOCK_STREAM, 0);//(domain = Ipv4, type = TCP, protocol = 0
@@ -52,17 +47,17 @@ int main(int argc,char** argv){
 	int count = 0, k = 0;
 	for(int i =0; buffer[i];i++){
 		if(count == 2)
-			rip[k++] = buffer[i];
+			packet.dip[k++] = buffer[i];
 		if(buffer[i] == '|')
 			count++;
 	}
-	rip[k] = '\0';
+	packet.dip[k] = '\0';
 
 	//Check ARP request packet
-	if(strcmp(rip, ip) == 0){
+	if(strcmp(packet.dip, packet.sip) == 0){
 		printf("\nIP address matches.\n");
 		//Write message in buffer
-		strcat(buffer, "|");strcat(buffer, mac);
+		strcat(buffer, "|");strcat(buffer, packet.smac);
 		write(sockfd, buffer, sizeof(buffer));
 		printf("\nARP reply sent: %s\n", buffer);
 

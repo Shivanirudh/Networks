@@ -1,25 +1,7 @@
 /*Simulation of ARP protocol*/
 //Server
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<sys/types.h>
-#include<sys/socket.h>
-#include<netinet/in.h>
-#include<string.h>
-#include<unistd.h>
-#include<sys/time.h>
-
-struct Packet{
-	char *sip;           //Source IP address
-	char *smac;          //Source MAC address
-	char *dip;           //Destination IP address
-	char *dmac;          //Destination MAC address
-	char *arp_packet;    //ARP packet
-	char *data;          //Data 
-};
-
-typedef struct Packet Arp;
+#include "Packet.h"
 
 int main(int argc,char **argv){
 	//Server and Client addresses
@@ -33,31 +15,22 @@ int main(int argc,char **argv){
 	//Socket file descriptor for accepting connections
 	int newfd;
 	
-	//ARP Packet structure
-	Arp packet;
+	if(argc > 1){
+		perror("Error: No arguments needed to run server. \n");
+	}
 	
-	packet.sip = (char*)calloc(100,sizeof(char));
-	packet.smac = (char*)calloc(100, sizeof(char));
-	packet.dip = (char*)calloc(100,sizeof(char));
-	packet.dmac = (char*)calloc(100, sizeof(char));
-	packet.arp_packet = (char*)calloc(100, sizeof(char));
-	packet.data = (char*)calloc(100, sizeof(char));
+	//ARP Packet structure
+	ARP packet;
+	
+	//Initialising ARP packet
+	init(&packet);
 
 	//Accepting packet details
-	printf("\nEnter the details of packet received. \n");
-	printf("\nSource IP address: ");scanf(" %s", packet.sip);
-	printf("\nSource MAC address: ");scanf(" %s", packet.smac);
-	printf("\nDestination IP address: ");scanf(" %s", packet.dip);
-	printf("\n16 Bit data: ");scanf(" %s", packet.data);
-	
+	acceptPacket(&packet);
 
 	//Developing ARP request packet
-	printf("\nDeveloping ARP packet details.\n");
-	strcpy(packet.arp_packet, packet.sip);strcat(packet.arp_packet, "|");
-	strcat(packet.arp_packet, packet.smac);strcat(packet.arp_packet, "|");
-	strcat(packet.arp_packet, packet.dip);
+	developPacket(&packet);
 	printf("%s\n", packet.arp_packet);
-
 
 	for(int i = 0; i < 30; i++)
 		client_sockets[i] = 0;
@@ -97,7 +70,6 @@ int main(int argc,char **argv){
 			if(sd > 0)
 				FD_SET(sd, &clientfds);
 			
-
 			//Store highest valued file descriptor
 			if(sd > max_sd)
 				max_sd = sd;
@@ -115,6 +87,7 @@ int main(int argc,char **argv){
 			if(newfd < 0)
 				perror("\nUnable to accept new connection.\n");
 						
+			//Send ARP Request
 			strcpy(buffer, packet.arp_packet);
 			write(newfd, buffer, sizeof(buffer));
 			//Add new client socket to list of sockets
@@ -136,24 +109,15 @@ int main(int argc,char **argv){
 				//Check ARP response
 				if(buffer[0]){
 					printf("\nARP Reply received: %s\n", buffer);
-					int count = 0, k = 0;
-					for(int i =0; buffer[i];i++){
-						if(count == 3)
-							packet.dmac[k++] = buffer[i];
-						if(buffer[i] == '|')
-							count++;
-					}
-					packet.dmac[k] = '\0';
-
+					get_destmac(&packet, buffer);
 
 					printf("\nSending packet to %s\n", packet.dmac);
 					bzero(buffer, sizeof(buffer));
 					
-					//Write message in buffer
-					strcpy(buffer, packet.arp_packet);strcat(buffer, "|");
-					strcat(buffer, packet.dmac); strcat(buffer, "|");
-					strcat(buffer, packet.data);
+					//Create data message
+					develop_msg(&packet, buffer);
 
+					//Write message in buffer
 					write(newfd, buffer, sizeof(buffer));
 					printf("\nPacket Sent: %s\n", buffer);
 				}
