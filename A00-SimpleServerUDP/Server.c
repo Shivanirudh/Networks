@@ -25,7 +25,7 @@ int main(int argc, char **argv){
 	//Filling server_address with null bytes
 	bzero(&server_address, sizeof(server_address));
 
-	server_address.sin_family    = AF_INET; // Uses Internet adress family
+	server_address.sin_family    = AF_INET; // Uses Internet address family
     server_address.sin_addr.s_addr = INADDR_ANY; //Use any of the available addresses
     server_address.sin_port = htons(5678); //Use port 5678
 
