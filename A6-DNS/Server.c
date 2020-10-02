@@ -46,12 +46,12 @@ int main(int argc, char **argv){
 	createRecord(table, "google.com", "17.10.23.123");
 
 	//Allow modification of table
-	char opt;
-	while (1){
+	int opt=0;
+	while(1){
 		DNSTable(table);
 
-		printf("\nDo you want to update table? y/n: ");scanf("%d", &opt);
-		if (opt != 'y' || opt != 'Y')
+		printf("\nDo you want to update table? 1/0: ");scanf("%d", &opt);
+		if(opt != 1 )
 			break;
 
 		printf("\nEnter domain: ");scanf(" %[^\n]", domain);

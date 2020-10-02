@@ -19,9 +19,9 @@ struct record{
 typedef struct record Record;
 
 void init(Record *r){
-	r->domain = (char*)calloc(100, sizeof(100));
+	r->domain = (char*)calloc(100, sizeof(char));
 	for(int i =0;i<ADDR_LIMIT;i++)
-		r->address[i] = (char*)calloc(100, sizeof(100));
+		r->address[i] = (char*)calloc(100, sizeof(char));
 }
 
 //Print DNS Table
@@ -29,11 +29,11 @@ void DNSTable(Record table[DOMAIN_LIMIT]){
     printf(" ________________________________________ \n");
     printf("|___Domain Name___|________Address_______|\n");
     
-    for (int i = 0; i < MAX_DOMAIN; i++){
+    for (int i = 0; i < DOMAIN_LIMIT; i++){
         if (table[i].domain[0]){
             printf("| %-15s | %-20s |\n", table[i].domain, table[i].address[0]);
 
-            for (int j = 1; j < MAX_ADDR && table[i].address[j][0]; j++)
+            for (int j = 1; j < ADDR_LIMIT && table[i].address[j][0]; j++)
                 printf("| %-15s | %-20s |\n", "", table[i].address[j]);
             printf("|_________________|______________________|\n");
         }
@@ -44,7 +44,7 @@ void DNSTable(Record table[DOMAIN_LIMIT]){
 //Check if newly specified address is a valid address
 int checkAddress(Record *table, char *address){
     
-    string addr_copy;
+    char* addr_copy = (char*)calloc(100, sizeof(char));
     strcpy(addr_copy, address);
     char *split;
     int val;
@@ -86,7 +86,7 @@ int createRecord(Record table[DOMAIN_LIMIT], char *domain, char *address){
 
     for (int i = 0; i < DOMAIN_LIMIT; i++){
         if (strcmp(table[i].domain, domain) == 0){
-            for (int j = 0; j < MAX_DOMAIN; j++)
+            for (int j = 0; j < DOMAIN_LIMIT; j++)
                 if (!table[i].address[j][0]){
                     strcpy(table[i].address[j], address);
                     flag = 1;
