@@ -5,7 +5,8 @@
 
 int main(int argc, char **argv){
 	
-	Record table[DOMAIN_LIMIT], result ;//= (Record*)calloc(1, sizeof(Record));
+	Record table[DOMAIN_LIMIT];
+	char *addresses = (char*)calloc(ADDR_LIMIT*2, sizeof(char));
 	for(int i =0; i<DOMAIN_LIMIT;i++){
 		init(&table[i]);
 	}
@@ -47,32 +48,82 @@ int main(int argc, char **argv){
 	createRecord(table, "google.com", "17.10.23.123");
 
 	//Allow modification of table
-	int opt=0;
-	while(1){
+	char opt='n';
+	do{
 		DNSTable(table);
 
-		printf("\nDo you want to update table? 1/0: ");scanf("%d", &opt);
-		if(opt != 1 )
-			break;
+		printf("\nDo you want to update table? y/n: ");scanf(" %c", &opt);
 
-		printf("\nEnter domain: ");scanf(" %[^\n]", domain);
-		printf("\nEnter address: ");scanf(" %[^\n]", address);
+		if(opt == 'y' || opt == 'Y'){
+			printf("\nEnter domain: ");scanf(" %[^\n]", domain);
+			printf("\nEnter address: ");scanf(" %[^\n]", address);
 
-		int rval = createRecord(table, domain, address);
-		if(rval)
-			printf("\nSuccessfully added entry\n");
-	}
+			int rval = createRecord(table, domain, address);
+			if(rval)
+				printf("\nSuccessfully added entry!!\n");
+		}
+	}while(opt == 'y'||opt == 'Y');
 
 	printf("\nDNS Server set up\n");
 
 	while(1){
 		bzero(&buffer, sizeof(buffer));
 		recvfrom(sockfd, buffer, sizeof(buffer), MSG_WAITALL, (struct sockaddr *)&client_address, &len);
-		printf("\n%s\n", buffer);
 		
-		init(&result);
-		result = getAddress(table, buffer);
-		sendto(sockfd, &result, sizeof(Record), MSG_CONFIRM, (struct sockaddr *)&client_address, len);
+		strcpy(addresses, getAddress(table, buffer));
+		sendto(sockfd, addresses, sizeof(buffer), MSG_CONFIRM, (struct sockaddr *)&client_address, len);
 	}
 	close(sockfd);
 }
+
+/*
+Output:
+ ________________________________________ 
+|___Domain Name___|________Address_______|
+| google.com      | 192.168.1.1          |
+|                 | 17.10.23.123         |
+|_________________|______________________|
+| yahoo.com       | 194.12.34.12         |
+|_________________|______________________|
+
+
+Do you want to update table? y/n: y
+
+Enter domain: google.com
+
+Enter address: 255.254.253.252
+
+Successfully added entry!!
+ ________________________________________ 
+|___Domain Name___|________Address_______|
+| google.com      | 192.168.1.1          |
+|                 | 17.10.23.123         |
+|                 | 255.254.253.252      |
+|_________________|______________________|
+| yahoo.com       | 194.12.34.12         |
+|_________________|______________________|
+
+
+Do you want to update table? y/n: y
+
+Enter domain: youtube.com
+
+Enter address: 111.234.15.1
+
+Successfully added entry!!
+ ________________________________________ 
+|___Domain Name___|________Address_______|
+| google.com      | 192.168.1.1          |
+|                 | 17.10.23.123         |
+|                 | 255.254.253.252      |
+|_________________|______________________|
+| yahoo.com       | 194.12.34.12         |
+|_________________|______________________|
+| youtube.com     | 111.234.15.1         |
+|_________________|______________________|
+
+
+Do you want to update table? y/n: n
+
+DNS Server set up
+*/

@@ -49,7 +49,7 @@ int checkAddress(Record *table, char *address){
     char *split;
     int val;
     split = strtok(addr_copy, ".");
-    //Check if all octets lue within 0 and 255.
+    //Check if all octets lie within 0 and 255.
     while (split){
         val = atoi(split);
         if (val < 0 || val > 255){
@@ -108,23 +108,18 @@ int createRecord(Record table[DOMAIN_LIMIT], char *domain, char *address){
     return flag;
 }
 
-Record getAddress(Record *table, char *domain){
+char *getAddress(Record *table, char *domain){
     
-    Record result;
-    init(&result);
-    strcpy(result.domain, domain);
-    printf("\n%s %s\n", domain, result.domain);
+    char* addresses = (char*)calloc(ADDR_LIMIT*20, sizeof(char));
+
     for (int i = 0; i < DOMAIN_LIMIT; i++){
         if (strcmp(table[i].domain, domain) == 0){
             for (int j = 0; j < ADDR_LIMIT; j++)            {
-                strcpy(result.address[j], table[i].address[j]);
+                strcat(addresses, table[i].address[j]);
+                strcat(addresses, " ");
             }
             break;
         }
     }
-    printf("\nDomain: %s\nAddresses: ", result.domain);
-    for(int i = 0;i<ADDR_LIMIT;i++)
-        printf("%s ", result.address[i]);
-    printf("\n");
-    return result;
+    return addresses;
 }

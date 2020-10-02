@@ -35,38 +35,76 @@ int main(int argc, char **argv){
 
 		printf("\nEnter the domain name: ");scanf(" %[^\n]", query->domain);
 
-		if (strcmp(query->domain, "END") == 0)
+		if (strcmp(query->domain, "end") == 0)
 			break;
+		//Send requested domain name
+		sendto(sockfd, query->domain, sizeof(buffer), MSG_CONFIRM, (struct sockaddr *)&server_address, sizeof(server_address));
 		
 		bzero(&buffer, sizeof(buffer));
-		//strcpy(buffer, query->domain);
-		sendto(sockfd, query->domain, sizeof(buffer), MSG_CONFIRM, (struct sockaddr *)&server_address, sizeof(server_address));
-		query = NULL;
-		query = (Record*)malloc(sizeof(Record));
-		bzero(&query, sizeof(Record));
-		recvfrom(sockfd, query, sizeof(Record), MSG_WAITALL, (struct sockaddr *)&server_address, &len);
+		//Recieve IP address(es) of requested domain if it exists.
+		recvfrom(sockfd, buffer, sizeof(buffer), MSG_WAITALL, (struct sockaddr *)&server_address, &len);
 
-		printf("\nHI1\n");
-		printf("\nDomain: %s\nAddresses: ", query->domain);
-	    printf("\nHI2\n");
-	    for(int i = 0;i<ADDR_LIMIT;i++){
-	    	printf("\nHI3\n");
-	        printf("%s ", query->address[i]);
-	    }
-	    printf("\nHI4\n");
-	    printf("\n");
-	    printf("\nHI5\n");
-		if (!query->address[0][0])
-			printf("\nNo entry in DNS!\n");
+		printf("\nThe IP Address of the requested domain is: ");
+	    char* split = strtok(buffer, " ");
+	    if(split){
+		    while(split){
+		    	printf("\n%s", split);
+		    	split = strtok(NULL, " ");
+		    }
+		    printf("\n");
+		}
 		else{
-			printf("\nThe IP Address is: ");
-			for (int i = 0; i < ADDR_LIMIT; i++){
-				if (query->address[i][0])
-					printf("%s\n", query->address[i]);
-			}
-			printf("\n");
+			printf("\nNo address in DNS.\n");
 		}
 	}
 
 	close(sockfd);
 }
+
+/*
+Output:
+Client 1:
+Enter the domain name: google.com
+
+The IP Address of the requested domain is: 
+192.168.1.1
+17.10.23.123
+255.254.253.252
+
+Enter the domain name: youtube.com
+
+The IP Address of the requested domain is: 
+111.234.15.1
+
+Enter the domain name: end
+
+Client 2:
+Enter the domain name: youtube.com
+
+The IP Address of the requested domain is: 
+111.234.15.1
+
+Enter the domain name: yahoo.com
+
+The IP Address of the requested domain is: 
+194.12.34.12
+
+Enter the domain name: end
+
+Client 3:
+Enter the domain name: yahoo.com
+
+The IP Address of the requested domain is: 
+194.12.34.12
+
+Enter the domain name: google.com
+
+The IP Address of the requested domain is: 
+192.168.1.1
+17.10.23.123
+255.254.253.252
+
+Enter the domain name: end
+
+
+*/
