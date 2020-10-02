@@ -7,6 +7,7 @@ int main(int argc, char **argv){
 	printf("\nHI1\n");
 	if (argc < 2){
 		perror("\nError: IP address is to be passed as argument.\n");
+		exit(0);
 	}
 	printf("\nHI2\n");
 	//Server addresses
@@ -43,8 +44,10 @@ int main(int argc, char **argv){
 
 		if (strcmp(query.domain, "END") == 0)
 			break;
-		printf("\n%s\n", query.domain);
-		sendto(sockfd, &query, sizeof(Record), MSG_CONFIRM, (struct sockaddr *)&server_address, sizeof(server_address));
+		
+		bzero(&buffer, sizeof(buffer));
+		strcpy(buffer, query.domain);
+		sendto(sockfd, buffer, sizeof(buffer), MSG_CONFIRM, (struct sockaddr *)&server_address, sizeof(server_address));
 		recvfrom(sockfd, &query, sizeof(Record), MSG_WAITALL, (struct sockaddr *)&server_address, &len);
 
 		if (!query.address[0][0])

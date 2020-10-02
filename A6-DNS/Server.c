@@ -12,12 +12,13 @@ int main(int argc, char **argv){
 
 	if (argc > 1){
 		perror("\nError: No arguments needed for server.\n");
+		exit(0);
 	}
 
 	//Server and Client addresses
 	struct sockaddr_in server_address, client_address;
 	//Buffer to handle messages
-	char buffer[30];
+	char buffer[1024];
 
 	char *domain = (char*)calloc(100, sizeof(char));
 	char *address = (char*)calloc(100, sizeof(char));
@@ -66,10 +67,10 @@ int main(int argc, char **argv){
 
 	while(1){
 		bzero(&buffer, sizeof(buffer));
-		recvfrom(sockfd, result, sizeof(result), MSG_WAITALL, (struct sockaddr *)&client_address, &len);
-		printf("\n%s\n", result->domain);
-		//bzero(result, sizeof(result));
-		result = getAddress(table, result->domain);
+		recvfrom(sockfd, buffer, sizeof(buffer), MSG_WAITALL, (struct sockaddr *)&client_address, &len);
+		printf("\n%s\n", buffer);
+		
+		result = getAddress(table, &buffer);
 		sendto(sockfd, result, sizeof(Record), MSG_CONFIRM, (struct sockaddr *)&client_address, len);
 	}
 	close(sockfd);
