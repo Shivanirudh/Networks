@@ -108,12 +108,12 @@ int createRecord(Record table[DOMAIN_LIMIT], char *domain, char *address){
     return flag;
 }
 
-Record *getAddress(Record *table, char *domain){
+Record getAddress(Record *table, char *domain){
     
     Record result;
     init(&result);
     strcpy(result.domain, domain);
-
+    printf("\n%s %s\n", domain, result.domain);
     for (int i = 0; i < DOMAIN_LIMIT; i++){
         if (strcmp(table[i].domain, domain) == 0){
             for (int j = 0; j < ADDR_LIMIT; j++)            {
@@ -122,5 +122,9 @@ Record *getAddress(Record *table, char *domain){
             break;
         }
     }
-    return (&result);
+    printf("\nDomain: %s\nAddresses: ", result.domain);
+    for(int i = 0;i<ADDR_LIMIT;i++)
+        printf("%s ", result.address[i]);
+    printf("\n");
+    return result;
 }

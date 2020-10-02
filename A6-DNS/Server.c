@@ -5,7 +5,7 @@
 
 int main(int argc, char **argv){
 	
-	Record table[DOMAIN_LIMIT], *result;
+	Record table[DOMAIN_LIMIT], result ;//= (Record*)calloc(1, sizeof(Record));
 	for(int i =0; i<DOMAIN_LIMIT;i++){
 		init(&table[i]);
 	}
@@ -70,8 +70,9 @@ int main(int argc, char **argv){
 		recvfrom(sockfd, buffer, sizeof(buffer), MSG_WAITALL, (struct sockaddr *)&client_address, &len);
 		printf("\n%s\n", buffer);
 		
-		result = getAddress(table, &buffer);
-		sendto(sockfd, result, sizeof(Record), MSG_CONFIRM, (struct sockaddr *)&client_address, len);
+		init(&result);
+		result = getAddress(table, buffer);
+		sendto(sockfd, &result, sizeof(Record), MSG_CONFIRM, (struct sockaddr *)&client_address, len);
 	}
 	close(sockfd);
 }
