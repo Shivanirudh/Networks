@@ -65,9 +65,11 @@ int main(int argc, char **argv){
 	printf("\nDNS Server set up\n");
 
 	while(1){
-
-		recvfrom(sockfd, buffer, sizeof(buffer), MSG_WAITALL, (struct sockaddr *)&client_address, &len);
-		result = getAddress(table, buffer);
+		bzero(&buffer, sizeof(buffer));
+		recvfrom(sockfd, result, sizeof(result), MSG_WAITALL, (struct sockaddr *)&client_address, &len);
+		printf("\n%s\n", result->domain);
+		//bzero(result, sizeof(result));
+		result = getAddress(table, result->domain);
 		sendto(sockfd, result, sizeof(Record), MSG_CONFIRM, (struct sockaddr *)&client_address, len);
 	}
 	close(sockfd);

@@ -43,8 +43,8 @@ int main(int argc, char **argv){
 
 		if (strcmp(query.domain, "END") == 0)
 			break;
-
-		sendto(sockfd, query.domain, sizeof(query.domain), MSG_CONFIRM, (struct sockaddr *)&server_address, sizeof(server_address));
+		printf("\n%s\n", query.domain);
+		sendto(sockfd, &query, sizeof(Record), MSG_CONFIRM, (struct sockaddr *)&server_address, sizeof(server_address));
 		recvfrom(sockfd, &query, sizeof(Record), MSG_WAITALL, (struct sockaddr *)&server_address, &len);
 
 		if (!query.address[0][0])
