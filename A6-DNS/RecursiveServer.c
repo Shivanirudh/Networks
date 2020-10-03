@@ -9,12 +9,15 @@ int main(int argc, char **argv){
 		perror("\nError: No arguments needed for server.\n");
 		exit(0);
 	}
-
+	//IP address(es) retrieved
+	char *addresses = (char*)calloc(ADDR_LIMIT*2, sizeof(char));
+	//Table at authoritative level
 	Record auth_table[DOMAIN_LIMIT];
-	Record local_table[DOMAIN_LIMIT];
 	for(int i =0; i<DOMAIN_LIMIT;i++){
 		init(&auth_table[i]);
 	}
+	//Table at local DNS server
+	Record local_table[DOMAIN_LIMIT];
 	for(int i =0; i<DOMAIN_LIMIT;i++){
 		init(&local_table[i]);
 	}
@@ -70,13 +73,138 @@ int main(int argc, char **argv){
 	printf("\nDNS Server set up\n");
 
 	while(1){
+		printf("\n%50s\n","-");
 		bzero(&buffer, sizeof(buffer));
 		recvfrom(sockfd, buffer, sizeof(buffer), MSG_WAITALL, (struct sockaddr *)&client_address, &len);
 
+		strcpy(addresses, getAddress(local_table, buffer));
+		
+		char *copy = (char*)calloc(ADDR_LIMIT*20, sizeof(char));
+		strcpy(copy, addresses);
+		
+		printf("\nChecking local DNS server...");
+		char* split = strtok(copy, " ");
+	    if(split){
+	    	printf("Available in local DNS server. \n");
+	    	sendto(sockfd, addresses, sizeof(buffer), MSG_CONFIRM, (struct sockaddr *)&client_address, len);
+		}
+		else{
+			printf("\nNot found in local DNS server.\n");
+			
+			printf("\nChecking root DNS server...");
+			printf("\nNot found in root DNS server. \n");
+			
+			printf("\nChecking top level DNS server...");
+			printf("\nNot found in top level DNS server. \n");
+
+			printf("\nChecking authoritative DNS server...");
+			strcpy(addresses, getAddress(auth_table, buffer));
+
+			strcpy(copy, addresses);
+			split = strtok(copy, " ");
+			if(split){
+				while(split){
+					int val = createRecord(local_table, buffer, split);
+					if(val)
+						printf("\nSuccessfully added entry in local DNS server.\n");
+					split = strtok(NULL, " ");
+				}
+				sendto(sockfd, addresses, sizeof(buffer), MSG_CONFIRM, (struct sockaddr *)&client_address, len);
+			}
+			else{
+				sendto(sockfd, addresses, sizeof(buffer), MSG_CONFIRM, (struct sockaddr *)&client_address, len);
+			}
+		}
 		
 		
-		strcpy(addresses, getAddress(table, buffer));
-		sendto(sockfd, addresses, sizeof(buffer), MSG_CONFIRM, (struct sockaddr *)&client_address, len);
 	}
 	close(sockfd);
 }
+
+/*
+Output:
+ ________________________________________ 
+|___Domain Name___|________Address_______|
+| google.com      | 192.168.1.1          |
+|                 | 17.10.23.123         |
+|_________________|______________________|
+| yahoo.com       | 194.12.34.12         |
+|_________________|______________________|
+
+
+Do you want to update table? y/n: y
+
+Enter domain: youtube.com
+
+Enter address: 255.254.253.252
+
+Successfully added entry!!
+ ________________________________________ 
+|___Domain Name___|________Address_______|
+| google.com      | 192.168.1.1          |
+|                 | 17.10.23.123         |
+|_________________|______________________|
+| yahoo.com       | 194.12.34.12         |
+|_________________|______________________|
+| youtube.com     | 255.254.253.252      |
+|_________________|______________________|
+
+
+Do you want to update table? y/n: n
+
+DNS Server set up
+
+--------------------------------------------------
+
+Checking local DNS server...
+Not found in local DNS server.
+
+Checking root DNS server...
+Not found in root DNS server. 
+
+Checking top level DNS server...
+Not found in top level DNS server. 
+
+Checking authoritative DNS server...
+Successfully added entry in local DNS server.
+
+--------------------------------------------------
+
+Checking local DNS server...
+Not found in local DNS server.
+
+Checking root DNS server...
+Not found in root DNS server. 
+
+Checking top level DNS server...
+Not found in top level DNS server. 
+
+Checking authoritative DNS server...
+Successfully added entry in local DNS server.
+
+--------------------------------------------------
+
+Checking local DNS server...
+Not found in local DNS server.
+
+Checking root DNS server...
+Not found in root DNS server. 
+
+Checking top level DNS server...
+Not found in top level DNS server. 
+
+Checking authoritative DNS server...
+Successfully added entry in local DNS server.
+
+--------------------------------------------------
+
+Checking local DNS server...Available in local DNS server. 
+
+--------------------------------------------------
+
+Checking local DNS server...Available in local DNS server. 
+
+--------------------------------------------------
+
+Checking local DNS server...Available in local DNS server.
+*/

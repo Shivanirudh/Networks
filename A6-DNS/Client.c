@@ -106,5 +106,50 @@ The IP Address of the requested domain is:
 
 Enter the domain name: end
 
+*/
+
+/*
+Recursive DNS output:
+
+Client 1:
+Enter the domain name: yahoo.com
+
+The IP Address of the requested domain is: 
+194.12.34.12
+
+Enter the domain name: google.com
+
+The IP Address of the requested domain is: 
+192.168.1.1
+17.10.23.123
+
+Enter the domain name: end
+
+Client 2:
+Enter the domain name: google.com
+
+The IP Address of the requested domain is: 
+192.168.1.1
+17.10.23.123
+
+Enter the domain name: youtube.com
+
+The IP Address of the requested domain is: 
+255.254.253.252
+
+Enter the domain name: end
+
+Client 3:
+Enter the domain name: youtube.com
+
+The IP Address of the requested domain is: 
+255.254.253.252
+
+Enter the domain name: yahoo.com
+
+The IP Address of the requested domain is: 
+194.12.34.12
+
+Enter the domain name: end
 
 */
