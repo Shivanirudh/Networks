@@ -44,9 +44,9 @@ int main(int argc, char **argv){
 		//Recieve IP address(es) of requested domain if it exists.
 		recvfrom(sockfd, buffer, sizeof(buffer), MSG_WAITALL, (struct sockaddr *)&server_address, &len);
 
-		printf("\nThe IP Address of the requested domain is: ");
 	    char* split = strtok(buffer, " ");
 	    if(split){
+	    	printf("\nThe IP Address of the requested domain is: ");
 		    while(split){
 		    	printf("\n%s", split);
 		    	split = strtok(NULL, " ");
