@@ -1,0 +1,6 @@
+#Tex extra files
+*.aux
+*.log
+
+#Extra C files
+*.h.gch
