@@ -16,6 +16,16 @@ int main(int argc, char **argv){
 	for(int i =0; i<DOMAIN_LIMIT;i++){
 		init(&auth_table[i]);
 	}
+	//Table at top level
+	Record top_table[DOMAIN_LIMIT];
+	for(int i =0; i<DOMAIN_LIMIT;i++){
+		init(&top_table[i]);
+	}
+	//Table at root level
+	Record root_table[DOMAIN_LIMIT];
+	for(int i =0; i<DOMAIN_LIMIT;i++){
+		init(&root_table[i]);
+	}
 	//Table at local DNS server
 	Record local_table[DOMAIN_LIMIT];
 	for(int i =0; i<DOMAIN_LIMIT;i++){
@@ -92,9 +102,46 @@ int main(int argc, char **argv){
 			printf("\nNot found in local DNS server.\n");
 			
 			printf("\nChecking root DNS server...");
+			strcpy(addresses, getAddress(root_table, buffer));
+		
+			copy = (char*)calloc(ADDR_LIMIT*20, sizeof(char));
+			strcpy(copy, addresses);
+
+			split = strtok(copy, " ");
+			if(split){
+				printf("Available in root DNS server. \n");
+				while(split){
+					int val = createRecord(local_table, buffer, split);
+					if(val)
+						printf("\nSuccessfully added entry in local DNS server.\n");
+					split = strtok(NULL, " ");
+				}
+	    		sendto(sockfd, addresses, sizeof(buffer), MSG_CONFIRM, (struct sockaddr *)&client_address, len);
+				continue;
+			}
 			printf("\nNot found in root DNS server. \n");
 			
 			printf("\nChecking top level DNS server...");
+			strcpy(addresses, getAddress(top_table, buffer));
+		
+			copy = (char*)calloc(ADDR_LIMIT*20, sizeof(char));
+			strcpy(copy, addresses);
+
+			split = strtok(copy, " ");
+			if(split){
+				printf("Available in root DNS server. \n");
+				while(split){
+					int val = createRecord(local_table, buffer, split);
+					if(val)
+						printf("\nSuccessfully added entry in local DNS server.\n");
+					val = createRecord(root_table, buffer, split);
+					if(val)
+						printf("\nSuccessfully added entry in root DNS server.\n");
+					split = strtok(NULL, " ");
+				}
+	    		sendto(sockfd, addresses, sizeof(buffer), MSG_CONFIRM, (struct sockaddr *)&client_address, len);
+				continue;
+			}
 			printf("\nNot found in top level DNS server. \n");
 
 			printf("\nChecking authoritative DNS server...");
@@ -107,6 +154,12 @@ int main(int argc, char **argv){
 					int val = createRecord(local_table, buffer, split);
 					if(val)
 						printf("\nSuccessfully added entry in local DNS server.\n");
+					val = createRecord(root_table, buffer, split);
+					if(val)
+						printf("\nSuccessfully added entry in root DNS server.\n");
+					val = createRecord(top_table, buffer, split);
+					if(val)
+						printf("\nSuccessfully added entry in top DNS server.\n");
 					split = strtok(NULL, " ");
 				}
 				sendto(sockfd, addresses, sizeof(buffer), MSG_CONFIRM, (struct sockaddr *)&client_address, len);
