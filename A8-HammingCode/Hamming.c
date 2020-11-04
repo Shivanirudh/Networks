@@ -90,7 +90,10 @@ int main(){
         ctr++;
     }
 
-    //Hamming code for even parity
+    printf("\nEcode: %s", ecode);
+    printf("\nOcode: %s", ocode);
+
+    //Hamming code
     for(int i = 0;i<code_len;i++){
         int ham_bit = 0;
         int pos = 0;
@@ -98,6 +101,7 @@ int main(){
             if((i+1) == power(2, j))
                 ham_bit = 1;
                 pos += 1;
+                break;
         }
         if(ham_bit){
             int ctr = 0;
