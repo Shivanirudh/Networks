@@ -1,3 +1,5 @@
+//Hamming code
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -41,6 +43,7 @@ char* conv_to_bin(int number){
         n /= 2;
     }
     bin[pos] = '\0';
+    strrev(bin);
     return bin;
 }
 
@@ -48,8 +51,7 @@ int check_position(int number, int position){
     char *bin=(char*)calloc(100, sizeof(char));
     strcpy(bin, conv_to_bin(number));
     int len = strlen(bin);
-
-    return (bin[len - position]==1)? 1 : 0;
+    return (bin[len - position]=='1')? 1 : 0;
 }
 
 int main(){
@@ -78,45 +80,61 @@ int main(){
     strrev(ip);
     int code_len = ip_len + red_bits;
     //Assign data bits
+    int ip_ctr = 0;
     for(int i = 0;i<code_len;i++){
-        int ctr = 0;
         int ham_bit = 0;
         for(int j = 0; j < code_len && !ham_bit; j++){
             if((i+1) == power(2, j))
                 ham_bit = 1;
         }
-        ecode[i] = ham_bit? '0' : ip[ctr];
-        ocode[i] = ham_bit? '0' : ip[ctr];
-        ctr++;
+        if(ham_bit){
+            ecode[i] = '0';
+            ocode[i] = '0';
+            
+        }
+        else{
+            ecode[i] = ip[ip_ctr];
+            ocode[i] = ip[ip_ctr];
+            ip_ctr++;
+        }
     }
 
-    printf("\nEcode: %s", ecode);
-    printf("\nOcode: %s", ocode);
-
     //Hamming code
+    int pos = 0; //Position to check in binary value
     for(int i = 0;i<code_len;i++){
         int ham_bit = 0;
-        int pos = 0;
         for(int j = 0; j < code_len && !ham_bit; j++){
-            if((i+1) == power(2, j))
+            if((i+1) == power(2, j)){
                 ham_bit = 1;
                 pos += 1;
-                break;
+            }
         }
         if(ham_bit){
             int ctr = 0;
             for(int j = 0;j<code_len;j++){
                 int check_pos = check_position(j+1, pos);
-                if(ecode[j] == 1){
+                if(ecode[j] == '1'&&check_pos){
                     ctr++;
                 }
             }
-            ecode[i] = ctr%2? 1:0;
-            ocode[i] = ctr%2? 0:1;
+            ecode[i] = ctr%2? '1':'0';
+            ocode[i] = ctr%2? '0':'1';
         }
     }
 
+    //Reversing code
+    strrev(ecode); strrev(ocode);
     printf("\nInput data: %s", input);
     printf("\nEven parity code: %s", ecode);
     printf("\nOdd parity code: %s\n", ocode);
 }
+
+
+/*
+Output:
+ Enter input data: 1011001
+
+Input data: 1011001
+Even parity code: 10101001110
+Odd parity code: 10111000101
+*/
