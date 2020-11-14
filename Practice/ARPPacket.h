@@ -30,14 +30,6 @@ void init(Packet *p){
     p->data = (char*)calloc(100, sizeof(char));
 }
 
-void acceptPacket(Packet *p){
-    printf("\nEnter source ip address: ");scanf(" %s", p->sip);
-    printf("\nEnter source mac address: ");scanf(" %s", p->smac);
-    printf("\nEnter destination ip address: ");scanf(" %s", p->dip);
-    printf("\nEnter destination mac address: ");scanf(" %s", p->dmac);
-    printf("\nEnter data: ");scanf(" %s", p->data);
-}
-
 char* developPacket(Packet *p){
     char *packet = (char*)calloc(100, sizeof(char));
     strcpy(packet, p->sip);strcat(packet, "|");
@@ -70,7 +62,7 @@ int checkIP(char *ip){
         int val = atoi(token);
         if(val < 0 || val > 255)
             return 0;
-        token = strtok(addr, NULL);
+        token = strtok(NULL, ".");
     }
     return 1;
 }
@@ -80,9 +72,18 @@ int checkMAC(char *mac){
     strcpy(addr, mac);
 
     int count = 0;
+    int vcount = 0;
     for(int i = 0;addr[i];i++){
-        if(addr[i] == ':')
+        if(addr[i] == ':'){
+            if(vcount != 2){
+                return 0;
+            }
+            else{
+                vcount = 0;
+            }
             count++;
+        }
+        vcount++;
     }
     if(count != 5)
         return 0;
@@ -112,18 +113,26 @@ int checkMAC(char *mac){
     return 1;
 }
 
-int checkPacket(Packet *p){
-    int check = 1;
-    check *= checkIP(p->sip);
-    if(!check)
-        return 0;
-    check *= checkIP(p->dip);
-    if(!check)
-        return 0;
-    check *= checkMAC(p->smac);
-    if(!check)
-        return 0;
-    check *= checkMAC(p->dmac);
-    return check;
+char* fixData(char *data){
+    char *str = (char*)calloc(100, sizeof(char));
+    int dlen = strlen(data);
+    dlen = 16-dlen;
+    while(dlen--){
+        strcat(str, "0");
+    }
+    strcat(str, data);
+    return str;
 }
 
+void acceptPacket(Packet *p){
+    printf("\nEnter source ip address: ");scanf(" %s", p->sip);
+    printf("\nEnter source mac address: ");scanf(" %s", p->smac);
+    printf("\nEnter destination ip address: ");scanf(" %s", p->dip);
+    printf("\nEnter destination mac address: ");scanf(" %s", p->dmac);
+    printf("\nEnter data: ");scanf(" %s", p->data);
+    strcpy(p->data, fixData(p->data));
+}
+
+int checkPacket(Packet *p){
+    return checkIP(p->sip) * checkIP(p->dip) * checkMAC(p->smac) * checkMAC(p->dmac);
+}
