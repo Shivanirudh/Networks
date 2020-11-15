@@ -79,14 +79,15 @@ int checkMAC(char *mac){
                 return 0;
             }
             else{
-                vcount = 0;
+                vcount = -1;
             }
             count++;
         }
         vcount++;
     }
-    if(count != 5)
+    if(count != 5){
         return 0;
+    }
     
     for(int i = 0; addr[i]; i++){
         if(addr[i] == ':')
@@ -102,12 +103,14 @@ int checkMAC(char *mac){
                     case 'C':
                     case 'D':
                     case 'E':
-                    case 'F': res = 1;
+                    case 'F': res = 1;break;
                     default: res = 0;
                 }
             }
-            if(!res)
+            if(!res){
                 return 0;
+            }
+                
         }
     }
     return 1;
@@ -125,11 +128,11 @@ char* fixData(char *data){
 }
 
 void acceptPacket(Packet *p){
-    printf("\nEnter source ip address: ");scanf(" %s", p->sip);
-    printf("\nEnter source mac address: ");scanf(" %s", p->smac);
-    printf("\nEnter destination ip address: ");scanf(" %s", p->dip);
-    printf("\nEnter destination mac address: ");scanf(" %s", p->dmac);
-    printf("\nEnter data: ");scanf(" %s", p->data);
+    printf("\nEnter source ip address: ");scanf(" %[^\n]", p->sip);
+    printf("\nEnter source mac address: ");scanf(" %[^\n]", p->smac);
+    printf("\nEnter destination ip address: ");scanf(" %[^\n]", p->dip);
+    printf("\nEnter destination mac address: ");scanf(" %[^\n]", p->dmac);
+    printf("\nEnter data: ");scanf(" %[^\n]", p->data);
     strcpy(p->data, fixData(p->data));
 }
 
