@@ -1,0 +1,178 @@
+
+1.	
+a.	Write a socket program to implement Echo server using UDP. 
+i.	At client side, read the details such as source IP address, Source MAC address, Destination IP address and 16 bit data.
+ii.	Perform 8-bit checksum to the data. 
+iii.	Develop an ARP Request packet and transmit to the server.
+iv.	The server reads the ARP request packet and echo back to the client.
+v.	Add two more clients to transmit the ARP request packet. The server should echo to the corresponding client.
+
+
+2.	
+Write a socket program to perform file transfer.
+a.	1st  content in file sample.txt.
+i.	The client transmits the IP address to the server in the form “w.x.y.z\n”.
+ii.	The sever finds the first address and last address for the IP address and writes in the file.
+b.	2nd content in file sample.txt.
+i.	The client transmits MAC address to the server.
+ii.	The server validates the MAC address and write the relevant information in file. 
+c.	The server transfers the sample.txt to the client.
+d.	The client stores the sample.txt in its desktop.
+
+
+
+
+3.	Write a socket program to perform file transfer.
+a.	The server reads a 10 bit number from the user.
+b.	The server finds the number of redundant bits needed and inserts the bits. Insert error in random position (error or no error condition). Write the modified data to a file.
+c.	The server transmit the file to the client.
+d.	The client reads the data from the file, decode the file content and prints the proper 10 bit data.
+
+
+4.	
+a.	Write a socket program to implement the following using UDP, multiple clients
+i.	The server stores a list of IP address, allocated/not allocated, if allocated the corresponding MAC Address, time duration of allocation.
+ii.	The client request for an IP address by transmitting the MAC to the server.
+iii.	Now, the server checks for free IP address and allocates it to a client.
+b.	Simulate link state and distance vector routing using NS2 and analyze the throughput for the same.
+
+                                   
+i.	Create a topology similar to the above.
+ii.	Create a bottleneck link between 4 -5 and 8-5.
+iii.	Use LS routing to transmit TCP data between 1 and 6.
+iv.	Use DV routing to transmit UDP data between 2 and 7.
+v.	Down the link 3 - 4 for 1 sec.
+vi.	Analyze the throughput for the transmission.
+
+
+5.	
+Write a socket program to implement bit stuffing. 
+a.	At Client side read data from user. 
+b.	At client side perform bit stuffing and transmit the stuffed data to the server. 
+c.	At the server side, reads the stuffed data.
+d.	At server side after reading the data, unstuffs it.
+e.	At server side display the original data to the user. Also display the original data with flags at both ends.
+
+6.	Write a socket program to implement byte stuffing. 
+a.	At Client side read data from user. 
+b.	At client side perform byte stuffing and transmit the stuffed data to the server. 
+c.	At the server side, read the stuffed data.
+d.	At server side after reading the data, unstuffs it.
+e.	At server side display the original data to the user. Also display the original data with flags at both ends.
+
+
+7.	Write a socket program to simulate Stop and Wait Protocol.
+a.	At client side read five 8 bit data from user.
+b.	Convert it to frames by adding frame number. 
+c.	Transmit the frames one after another to the server. Transmit with 2 options: no error, with error. (To check error condition keep a flag)
+d.	At server side, receive the frame.
+i.	If no error accept it and send ACK to server
+ii.	If error, discard it  and send NACK to server
+
+
+8.	
+a.	Write a socket program to perform the following
+i.	At client side read an IP address in the form “w.x.y.z\n” from the user
+ii.	Validate the IP address. 
+iii.	Transmit the IP address to the server. 
+iv.	At server side, find the default mask and transmit to the client.
+b.	Simulate link state routing using NS2 and analyze the throughput for the same.
+
+                                   
+i.	Create a topology similar to the above.
+ii.	Create a bottleneck link between 4 and 5.
+iii.	Use LS routing to transmit TCP data between 1 and 6.
+iv.	Analyze the throughput for the transmission.
+
+
+
+9.	
+a.	Write a socket program to perform the following
+i.	At client side read an IP address in the form “w.x.y.z\n” from the user
+ii.	Validate the IP address. 
+iii.	Transmit the IP address to the server. 
+iv.	At server side, find the first address and last address.
+
+b.	Simulate distance vector routing using NS2 and analyze the throughput for the same.
+                                  
+i.	Create a topology similar to the above.
+ii.	Create a bottleneck link between 3 and 4.
+iii.	Use DV routing to transmit UDP data between 2 and 6.
+iv.	Analyze the throughput for the transmission.
+
+
+
+10.	
+Write a socket program to perform checksum. 
+a.	At client side read 16-bit data from user. 
+b.	Perform 8-bit checksum to the data. 
+c.	Introduce error or no-error condition and transmit the data to the server. 
+d.	At server side, check for any error in data. 
+i.	If there is any error in data request the client to retransmit. 
+ii.	Otherwise print the data.
+
+
+11.	
+Simulate a three-way handshake of TCP connection establishment using socket programming.
+a.	Display the header at client side for SYN msg with all the header fields (port numbers, seq number, ack number if any, excluding data).
+b.	Client transmit a request to the server. Enable the SYN bit in the header accordingly.
+c.	In response, the server response with a SYN + ACK. Enable this in the header accordingly.
+d.	Now, in response the client response with an ACK. Enable this in the header accordingly.
+
+
+
+12.	Simulate  data transmission part of TCP using socket programming. The client transmits three 1000 bytes data. 
+a.	Mention the byte number, sequence number for the 3 data.
+b.	Transmit the three 1000 bytes data with its relevant header.
+c.	In response, the server responses relevant acknowledgment for each data.
+
+
+13.	Simulate a three-way handshake of TCP connection termination using socket programming.
+a.	Display the header at client side for FIN msg with all the header fields (port numbers, seq number, ack number if any, excluding data).
+b.	Client transmit a request to the server. Enable the FIN bit in the header accordingly.
+c.	In response, the server response with a FIN + ACK. Enable this in the header accordingly.
+d.	Now, in response the client response with an ACK. Enable this in the header accordingly.
+
+
+
+
+14.	Write a socket program to perform the following:
+a.	The client transmits a network address and the number of subnets. 
+b.	The server identifies the class of the IP address. 
+c.	Based on the number of subnet and the class of network address find the subnet mask. ( automatic computation) 
+d.	The server writes the network address and the subnet mask to a file.
+e.	Transmit the file to the client.
+
+
+15.	
+a.	Write a socket program to perform the following
+i.	At client side read MAC address from the user
+ii.	Validate the MAC address. 
+iii.	Transmit the MAC address to the server. 
+iv.	At server side, find whether the MAC address is multicast or broadcast or unicast address
+
+b.	Simulate distance vector routing using NS2 and analyze the throughput for the same.                           
+i.	Create a topology similar to the above.
+ii.	Create a bottleneck link between 3 and 4.
+iii.	Use DV routing to transmit UDP data between 2 and 6.
+iv.	Analyze the throughput for the transmission.
+
+16.	
+a.	Write a socket program to implement the following using TCP, multiple clients
+i.	The server stores a list of MAC address, allocated IP MAC Address, time duration.
+ii.	The client transmits an IP address.
+iii.	Now, the server checks for the IP address and transmits the corresponding MAC to the client.
+b.	Simulate link state and distance vector routing using NS2 and analyze the throughput for the same.
+i.	Create a topology similar to the above.
+ii.	Create a bottleneck link between 8 -5 and 4-5.
+iii.	Use LS routing to transmit TCP data between 7 and 1.
+iv.	Use DV routing to transmit UDP data between 6 and 2.
+v.	Down the link 3 - 8 for 1 sec.
+vi.	Analyze the throughput for the transmission.
+
+
+
+
+
+
+
