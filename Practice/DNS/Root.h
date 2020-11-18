@@ -1,4 +1,4 @@
-#include "TL.c"
+#include "TL.h"
 
 struct rootTable{
     Record table[DOMAIN_LIMIT];

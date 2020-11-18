@@ -1,4 +1,4 @@
-#include "Auth.c"
+#include "Auth.h"
 
 struct TLTable{
     Record table[DOMAIN_LIMIT];

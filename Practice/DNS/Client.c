@@ -1,7 +1,7 @@
 //DNS using UDP
 //Client 
 
-#include "DNSTable.h"
+#include "Table.h"
 
 int main(int argc, char **argv){
 

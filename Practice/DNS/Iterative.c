@@ -1,7 +1,7 @@
 //DNS using UDP
 //Server
 
-#include "Local.c"
+#include "Local.h"
 
 int main(int argc, char **argv){
 
@@ -129,14 +129,11 @@ int main(int argc, char **argv){
 
 			split = strtok(copy, " ");
 			if(split){
-				printf("Available in root DNS server. \n");
+				printf("Available in top level DNS server. \n");
 				while(split){
 					int val = createRecord(local_table.table, buffer, split);
 					if(val)
 						printf("\nSuccessfully added entry in local DNS server.\n");
-					val = createRecord(root_table.table, buffer, split);
-					if(val)
-						printf("\nSuccessfully added entry in root DNS server.\n");
 					split = strtok(NULL, " ");
 				}
 	    		sendto(sockfd, addresses, sizeof(buffer), MSG_CONFIRM, (struct sockaddr *)&client_address, len);
@@ -154,12 +151,6 @@ int main(int argc, char **argv){
 					int val = createRecord(local_table.table, buffer, split);
 					if(val)
 						printf("\nSuccessfully added entry in local DNS server.\n");
-					val = createRecord(root_table.table, buffer, split);
-					if(val)
-						printf("\nSuccessfully added entry in root DNS server.\n");
-					val = createRecord(top_table.table, buffer, split);
-					if(val)
-						printf("\nSuccessfully added entry in top DNS server.\n");
 					split = strtok(NULL, " ");
 				}
 				sendto(sockfd, addresses, sizeof(buffer), MSG_CONFIRM, (struct sockaddr *)&client_address, len);

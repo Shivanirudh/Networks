@@ -1,7 +1,7 @@
 //DNS using UDP
 //Server
 
-#include "Local.c"
+#include "Local.h"
 
 int main(int argc, char **argv){
 
