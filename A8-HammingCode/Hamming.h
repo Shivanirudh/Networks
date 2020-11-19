@@ -60,7 +60,6 @@ int conv_to_dec(char *number){
         if(copy[i] == '1')
             num += power(2, i);
     }
-    printf("\n%s %d", number, num);
     return num;
 }
 
